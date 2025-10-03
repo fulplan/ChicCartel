@@ -1,6 +1,6 @@
 import { X, Minus, Plus, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
 import { Separator } from "@/components/ui/separator";
 
 interface CartItem {
@@ -40,6 +40,9 @@ export default function CartDrawer({
           <SheetTitle className="text-2xl font-serif" data-testid="text-cart-title">
             Shopping Cart ({items.length})
           </SheetTitle>
+          <SheetDescription>
+            Review and manage items in your shopping cart
+          </SheetDescription>
         </SheetHeader>
 
         {items.length === 0 ? (

@@ -19,6 +19,7 @@ import {
   SheetContent,
   SheetHeader,
   SheetTitle,
+  SheetDescription,
   SheetTrigger,
 } from "@/components/ui/sheet";
 import {
@@ -242,6 +243,9 @@ export default function ShopPage() {
                 <SheetContent side="left" className="w-full sm:max-w-md">
                   <SheetHeader>
                     <SheetTitle>Filters</SheetTitle>
+                    <SheetDescription>
+                      Refine your product search with these filter options
+                    </SheetDescription>
                   </SheetHeader>
                   <div className="mt-6">
                     <FilterSidebar onFilterChange={(filters) => console.log('Filters:', filters)} />
