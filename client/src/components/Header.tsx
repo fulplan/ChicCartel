@@ -165,6 +165,10 @@ export default function Header({ cartItemCount = 0, onCartClick, onSearchChange 
               >
                 <button 
                   className="text-sm font-medium hover-elevate px-3 py-2 rounded-md transition-colors flex items-center gap-1"
+                  onClick={() => setActiveMenu(activeMenu === 'women' ? null : 'women')}
+                  onFocus={() => setActiveMenu('women')}
+                  aria-expanded={activeMenu === 'women'}
+                  aria-haspopup="true"
                   data-testid="link-women"
                 >
                   Women
@@ -179,6 +183,10 @@ export default function Header({ cartItemCount = 0, onCartClick, onSearchChange 
               >
                 <button 
                   className="text-sm font-medium hover-elevate px-3 py-2 rounded-md transition-colors flex items-center gap-1"
+                  onClick={() => setActiveMenu(activeMenu === 'men' ? null : 'men')}
+                  onFocus={() => setActiveMenu('men')}
+                  aria-expanded={activeMenu === 'men'}
+                  aria-haspopup="true"
                   data-testid="link-men"
                 >
                   Men
@@ -193,6 +201,10 @@ export default function Header({ cartItemCount = 0, onCartClick, onSearchChange 
               >
                 <button 
                   className="text-sm font-medium hover-elevate px-3 py-2 rounded-md transition-colors flex items-center gap-1"
+                  onClick={() => setActiveMenu(activeMenu === 'accessories' ? null : 'accessories')}
+                  onFocus={() => setActiveMenu('accessories')}
+                  aria-expanded={activeMenu === 'accessories'}
+                  aria-haspopup="true"
                   data-testid="link-accessories"
                 >
                   Accessories
