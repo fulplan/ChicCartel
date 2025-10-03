@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import Header from "@/components/Header";
 import ProductGrid from "@/components/ProductGrid";
 import FilterSidebar from "@/components/FilterSidebar";
@@ -6,7 +7,13 @@ import Footer from "@/components/Footer";
 import CartDrawer from "@/components/CartDrawer";
 import ThemeToggle from "@/components/ThemeToggle";
 import { Button } from "@/components/ui/button";
-import { SlidersHorizontal } from "lucide-react";
+import { 
+  SlidersHorizontal, 
+  LayoutGrid, 
+  LayoutList, 
+  ChevronDown,
+  X 
+} from "lucide-react";
 import {
   Sheet,
   SheetContent,
@@ -14,6 +21,13 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Badge } from "@/components/ui/badge";
 
 // Import product images
 import coat from '@assets/generated_images/Black_minimalist_fashion_coat_cd5d7051.png';
@@ -45,10 +59,16 @@ interface CartItem {
   size?: string;
 }
 
+type ViewMode = 'grid' | 'list';
+type SortOption = 'featured' | 'price-low' | 'price-high' | 'newest';
+
 export default function ShopPage() {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [viewMode, setViewMode] = useState<ViewMode>('grid');
+  const [sortBy, setSortBy] = useState<SortOption>('featured');
+  const [activeFilters, setActiveFilters] = useState<string[]>([]);
 
   //todo: remove mock functionality
   const handleAddToCart = (productId: string) => {
@@ -93,9 +113,20 @@ export default function ShopPage() {
     setCartItems(cartItems.filter(item => item.id !== id));
   };
 
+  const sortOptions: Record<SortOption, string> = {
+    'featured': 'Featured',
+    'price-low': 'Price: Low to High',
+    'price-high': 'Price: High to Low',
+    'newest': 'Newest First'
+  };
+
+  const removeFilter = (filter: string) => {
+    setActiveFilters(activeFilters.filter(f => f !== filter));
+  };
+
   return (
-    <div className="min-h-screen flex flex-col">
-      <div className="flex items-center justify-end p-2 border-b">
+    <div className="min-h-screen flex flex-col bg-background">
+      <div className="flex items-center justify-end p-3 md:p-4 border-b">
         <ThemeToggle />
       </div>
       
@@ -105,53 +136,208 @@ export default function ShopPage() {
       />
 
       <main className="flex-1">
-        <div className="container mx-auto px-4 sm:px-6 py-6 md:py-8">
-          {/* Page Header */}
-          <div className="flex items-center justify-between mb-6 md:mb-8 gap-4">
-            <div>
-              <h1 className="text-2xl sm:text-3xl md:text-4xl font-serif font-light mb-1 md:mb-2" data-testid="text-page-title">
+        {/* Hero Banner */}
+        <section className="bg-muted/30 border-b">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              className="max-w-3xl"
+            >
+              <h1 className="text-4xl sm:text-5xl md:text-6xl font-serif font-light mb-4">
                 All Products
               </h1>
-              <p className="text-muted-foreground text-sm sm:text-base" data-testid="text-product-count">
-                {mockProducts.length} items
+              <p className="text-lg text-muted-foreground">
+                Discover our complete collection of carefully curated fashion pieces
               </p>
+            </motion.div>
+          </div>
+        </section>
+
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-8">
+          {/* Toolbar */}
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6 md:mb-8">
+            {/* Left: Results count and active filters */}
+            <div className="flex items-center gap-3 flex-wrap">
+              <p className="text-sm text-muted-foreground" data-testid="text-product-count">
+                {mockProducts.length} products
+              </p>
+              {activeFilters.length > 0 && (
+                <div className="flex items-center gap-2 flex-wrap">
+                  {activeFilters.map((filter, index) => (
+                    <Badge key={index} variant="secondary" className="gap-1">
+                      {filter}
+                      <button
+                        onClick={() => removeFilter(filter)}
+                        className="ml-1 hover:bg-background/80 rounded-full p-0.5"
+                      >
+                        <X className="h-3 w-3" />
+                      </button>
+                    </Badge>
+                  ))}
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setActiveFilters([])}
+                    className="h-auto py-1 px-2 text-xs"
+                  >
+                    Clear all
+                  </Button>
+                </div>
+              )}
             </div>
 
-            {/* Mobile Filter Toggle */}
-            <Sheet open={isFilterOpen} onOpenChange={setIsFilterOpen}>
-              <SheetTrigger asChild>
-                <Button variant="outline" className="lg:hidden" data-testid="button-mobile-filters">
-                  <SlidersHorizontal className="h-4 w-4 mr-2" />
-                  Filters
+            {/* Right: Controls */}
+            <div className="flex items-center gap-3">
+              {/* Sort Dropdown */}
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" className="gap-2">
+                    <span className="text-sm">{sortOptions[sortBy]}</span>
+                    <ChevronDown className="h-4 w-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-48">
+                  {(Object.entries(sortOptions) as [SortOption, string][]).map(([value, label]) => (
+                    <DropdownMenuItem
+                      key={value}
+                      onClick={() => setSortBy(value)}
+                      className={sortBy === value ? 'bg-accent' : ''}
+                    >
+                      {label}
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
+
+              {/* View Mode Toggle */}
+              <div className="hidden sm:flex items-center gap-1 border rounded-md p-1">
+                <Button
+                  variant={viewMode === 'grid' ? 'secondary' : 'ghost'}
+                  size="sm"
+                  onClick={() => setViewMode('grid')}
+                  className="h-8 w-8 p-0"
+                >
+                  <LayoutGrid className="h-4 w-4" />
                 </Button>
-              </SheetTrigger>
-              <SheetContent side="left" className="w-full sm:max-w-md">
-                <SheetHeader>
-                  <SheetTitle>Filters</SheetTitle>
-                </SheetHeader>
-                <div className="mt-6">
-                  <FilterSidebar onFilterChange={(filters) => console.log('Filters:', filters)} />
-                </div>
-              </SheetContent>
-            </Sheet>
+                <Button
+                  variant={viewMode === 'list' ? 'secondary' : 'ghost'}
+                  size="sm"
+                  onClick={() => setViewMode('list')}
+                  className="h-8 w-8 p-0"
+                >
+                  <LayoutList className="h-4 w-4" />
+                </Button>
+              </div>
+
+              {/* Mobile Filter Toggle */}
+              <Sheet open={isFilterOpen} onOpenChange={setIsFilterOpen}>
+                <SheetTrigger asChild>
+                  <Button variant="outline" className="lg:hidden gap-2" data-testid="button-mobile-filters">
+                    <SlidersHorizontal className="h-4 w-4" />
+                    <span>Filters</span>
+                  </Button>
+                </SheetTrigger>
+                <SheetContent side="left" className="w-full sm:max-w-md">
+                  <SheetHeader>
+                    <SheetTitle>Filters</SheetTitle>
+                  </SheetHeader>
+                  <div className="mt-6">
+                    <FilterSidebar onFilterChange={(filters) => console.log('Filters:', filters)} />
+                  </div>
+                </SheetContent>
+              </Sheet>
+            </div>
           </div>
 
           {/* Main Content */}
-          <div className="flex gap-6 lg:gap-8">
+          <div className="flex gap-8 lg:gap-12">
             {/* Desktop Filter Sidebar */}
-            <aside className="hidden lg:block w-56 xl:w-64 flex-shrink-0">
-              <div className="sticky top-20">
+            <motion.aside
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.5 }}
+              className="hidden lg:block w-64 xl:w-72 flex-shrink-0"
+            >
+              <div className="sticky top-24 space-y-6">
+                <div>
+                  <h3 className="text-sm font-semibold mb-3">Refine Your Search</h3>
+                  <p className="text-xs text-muted-foreground mb-4">
+                    Use filters to find exactly what you're looking for
+                  </p>
+                </div>
                 <FilterSidebar onFilterChange={(filters) => console.log('Filters:', filters)} />
               </div>
-            </aside>
+            </motion.aside>
 
-            {/* Product Grid */}
+            {/* Product Display Area */}
             <div className="flex-1 min-w-0">
-              <ProductGrid
-                products={mockProducts}
-                onAddToCart={handleAddToCart}
-                onWishlist={(id) => console.log('Added to wishlist:', id)}
-              />
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={viewMode}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  {viewMode === 'grid' ? (
+                    <ProductGrid
+                      products={mockProducts}
+                      onAddToCart={handleAddToCart}
+                      onWishlist={(id) => console.log('Added to wishlist:', id)}
+                    />
+                  ) : (
+                    <div className="space-y-4">
+                      {mockProducts.map((product) => (
+                        <motion.div
+                          key={product.id}
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          className="flex gap-6 p-4 border rounded-lg hover:shadow-md transition-shadow bg-card"
+                        >
+                          <div className="w-32 h-40 flex-shrink-0 rounded-md overflow-hidden bg-muted">
+                            <img
+                              src={product.image}
+                              alt={product.name}
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+                          <div className="flex-1 flex flex-col justify-between">
+                            <div>
+                              <div className="flex items-start justify-between gap-4 mb-2">
+                                <h3 className="text-lg font-medium">{product.name}</h3>
+                                <div className="flex gap-1">
+                                  {product.isNew && (
+                                    <Badge variant="secondary" className="text-xs">New</Badge>
+                                  )}
+                                  {product.isSale && (
+                                    <Badge variant="destructive" className="text-xs">Sale</Badge>
+                                  )}
+                                </div>
+                              </div>
+                              <p className="text-sm text-muted-foreground mb-3">{product.category}</p>
+                              <div className="flex items-baseline gap-2">
+                                {product.isSale && product.salePrice ? (
+                                  <>
+                                    <span className="text-xl font-semibold">${product.salePrice}</span>
+                                    <span className="text-sm text-muted-foreground line-through">${product.price}</span>
+                                  </>
+                                ) : (
+                                  <span className="text-xl font-semibold">${product.price}</span>
+                                )}
+                              </div>
+                            </div>
+                            <Button onClick={() => handleAddToCart(product.id)} className="w-full sm:w-auto">
+                              Add to Cart
+                            </Button>
+                          </div>
+                        </motion.div>
+                      ))}
+                    </div>
+                  )}
+                </motion.div>
+              </AnimatePresence>
             </div>
           </div>
         </div>
