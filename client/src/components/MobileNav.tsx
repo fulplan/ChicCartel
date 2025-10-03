@@ -1,10 +1,12 @@
 import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Link } from "wouter";
 import {
   Sheet,
   SheetContent,
   SheetHeader,
   SheetTitle,
+  SheetDescription,
 } from "@/components/ui/sheet";
 
 interface MobileNavProps {
@@ -14,11 +16,11 @@ interface MobileNavProps {
 
 export default function MobileNav({ isOpen, onClose }: MobileNavProps) {
   const navLinks = [
-    { label: 'New Arrivals', href: '#new' },
-    { label: 'Women', href: '#women' },
-    { label: 'Men', href: '#men' },
-    { label: 'Accessories', href: '#accessories' },
-    { label: 'Sale', href: '#sale' },
+    { label: 'New Arrivals', href: '/new-arrivals' },
+    { label: 'Women', href: '/women' },
+    { label: 'Men', href: '/men' },
+    { label: 'Accessories', href: '/accessories' },
+    { label: 'Sale', href: '/sale' },
   ];
 
   return (
@@ -26,20 +28,23 @@ export default function MobileNav({ isOpen, onClose }: MobileNavProps) {
       <SheetContent side="left" className="w-full sm:max-w-md" data-testid="nav-mobile">
         <SheetHeader>
           <SheetTitle className="text-2xl font-serif font-light">Menu</SheetTitle>
+          <SheetDescription>
+            Navigate to different sections of our store
+          </SheetDescription>
         </SheetHeader>
 
         <nav className="mt-8">
           <ul className="space-y-1">
             {navLinks.map((link) => (
               <li key={link.href}>
-                <a
+                <Link
                   href={link.href}
                   onClick={onClose}
                   className="block px-4 py-3 text-lg hover-elevate rounded-md transition-colors"
                   data-testid={`link-mobile-${link.label.toLowerCase().replace(' ', '-')}`}
                 >
                   {link.label}
-                </a>
+                </Link>
               </li>
             ))}
           </ul>

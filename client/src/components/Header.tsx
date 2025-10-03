@@ -1,6 +1,7 @@
 import { ShoppingBag, Search, Heart, Menu, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Link } from "wouter";
 import { useState } from "react";
 import MobileNav from "./MobileNav";
 
@@ -37,48 +38,50 @@ export default function Header({ cartItemCount = 0, onCartClick, onSearchChange 
 
           {/* Logo */}
           <div className="flex-shrink-0 flex-1 lg:flex-initial">
-            <h1 className="text-xl md:text-2xl font-serif font-light tracking-tight" data-testid="text-logo">
-              LUXE
-            </h1>
+            <Link href="/">
+              <h1 className="text-xl md:text-2xl font-serif font-light tracking-tight cursor-pointer hover:opacity-80 transition-opacity" data-testid="text-logo">
+                LUXE
+              </h1>
+            </Link>
           </div>
 
           {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center gap-8 flex-1 justify-center">
-            <a 
-              href="#" 
+            <Link 
+              href="/new-arrivals" 
               className="text-sm font-medium hover-elevate px-3 py-2 rounded-md transition-colors"
               data-testid="link-new-arrivals"
             >
               New Arrivals
-            </a>
-            <a 
-              href="#" 
+            </Link>
+            <Link 
+              href="/women" 
               className="text-sm font-medium hover-elevate px-3 py-2 rounded-md transition-colors"
               data-testid="link-women"
             >
               Women
-            </a>
-            <a 
-              href="#" 
+            </Link>
+            <Link 
+              href="/men" 
               className="text-sm font-medium hover-elevate px-3 py-2 rounded-md transition-colors"
               data-testid="link-men"
             >
               Men
-            </a>
-            <a 
-              href="#" 
+            </Link>
+            <Link 
+              href="/accessories" 
               className="text-sm font-medium hover-elevate px-3 py-2 rounded-md transition-colors"
               data-testid="link-accessories"
             >
               Accessories
-            </a>
-            <a 
-              href="#" 
+            </Link>
+            <Link 
+              href="/sale" 
               className="text-sm font-medium hover-elevate px-3 py-2 rounded-md transition-colors"
               data-testid="link-sale"
             >
               Sale
-            </a>
+            </Link>
           </nav>
 
           {/* Search Bar (Desktop) */}
