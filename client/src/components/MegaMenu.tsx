@@ -56,9 +56,9 @@ export default function MegaMenu({ isOpen, onClose, sections, featured }: MegaMe
                       {section.items.map((item, itemIdx) => (
                         <li key={itemIdx}>
                           <Link href={item.href}>
-                            <a
+                            <span
                               onClick={onClose}
-                              className="group flex items-center justify-between text-sm hover:text-primary transition-colors"
+                              className="group flex items-center justify-between text-sm hover:text-primary transition-colors cursor-pointer"
                             >
                               <div>
                                 <div className="font-medium">{item.title}</div>
@@ -69,7 +69,7 @@ export default function MegaMenu({ isOpen, onClose, sections, featured }: MegaMe
                                 )}
                               </div>
                               <ChevronRight className="h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity" />
-                            </a>
+                            </span>
                           </Link>
                         </li>
                       ))}
@@ -80,7 +80,7 @@ export default function MegaMenu({ isOpen, onClose, sections, featured }: MegaMe
                 {featured && (
                   <div className="md:col-span-1 bg-muted/30 rounded-lg p-6 hover-elevate transition-all">
                     <Link href={featured.href}>
-                      <a onClick={onClose} className="block">
+                      <span onClick={onClose} className="block cursor-pointer">
                         {featured.image && (
                           <div className="aspect-square rounded-md overflow-hidden mb-4">
                             <img
@@ -92,7 +92,7 @@ export default function MegaMenu({ isOpen, onClose, sections, featured }: MegaMe
                         )}
                         <h3 className="font-semibold mb-2">{featured.title}</h3>
                         <p className="text-sm text-muted-foreground">{featured.description}</p>
-                      </a>
+                      </span>
                     </Link>
                   </div>
                 )}
